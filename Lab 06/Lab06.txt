@@ -1,0 +1,59 @@
+#LAB6 Python Code
+#imports go here
+#import MySQLdb
+import _mysql
+
+#code goes here
+
+buffer = "true"
+
+
+
+def oneQuery():
+	db = _mysql.connect(host="localhost",user="root",passwd=“hemlem”,db=“computers”)
+	db.query("""SELECT * FROM computers;”””)
+	r = db.store_result()
+	nR = r.num_rows()
+	while(nR > 0):
+		print(r.fetch_row())
+		nR = nR - 1
+	db.close()
+
+def twoQuery():
+	db = _mysql.connect(host="localhost",user="root",passwd=“hemlem”,db=“computers”)
+	db.query("""SELECT * FROM future;""")
+	r = db.store_result()
+	nR = r.num_rows()
+	while(nR > 0):
+		print(r.fetch_row())
+		nR = nR - 1
+	db.close()
+
+def threeQuery():
+	db = _mysql.connect(host="localhost",user="root",passwd=“hemlem”,db=“computers”)
+	#db.query("""SELECT * FROM company WHERE companyID NOT IN (SELECT * FROM company as a, Expenses AS b WHERE  
+	#	a.companyID = b.companyID;)""")
+	db.query("""SELECT companyID FROM company WHERE companyID not in (select companyID from Expenses)”””)
+	r = db.store_result()
+	nR = r.num_rows()
+	while(nR > 0):
+		print(r.fetch_row())
+		nR = nR - 1
+	if nR == 0:
+		print(“””all companies have future orders/equipment“””)
+	db.close()
+	
+while buffer:
+	print("""
+	0.Exit
+	1.See computers
+	2.See future
+	3.See if a company has no futures contracts
+	""")
+	buffer=input("what would you like to do?”)
+	if buffer == 1:
+		oneQuery()
+	if buffer == 2:
+		twoQuery()
+	if buffer == 3:
+		threeQuery()
